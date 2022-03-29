@@ -1,7 +1,8 @@
 import os
 import numpy as np
+import torchvision.transforms as transforms
 
-def get_newest_model(path):
+def get_newest_model(path):  #得到最新的model76
     key_files = [(float(file.replace('model_', '').replace('.pt', '')), file) for file in os.listdir(path) if
                  'model_' in file]
     key_files = sorted(key_files, key=lambda x: x[0], reverse=True)
@@ -16,18 +17,10 @@ def get_newest_model(path):
     return None
 
 
-# def save_img(img,save_path,img_name):
-#     if img.dtype == np.float:
-#         img = (img-img.min()) / (img.max()-img.min())
-#         img = img * np.iinfo(np.uint8).max
-#         img = img.astype(np.uint8)
-#         # img=cv2.cvtColor(img,cv2.COLOR_RGB2BGR)
-#
-#     cv2.imwrite(os.path.join(save_path,img_name), img)
-
 def anti_normalize(img):
-    img=(img - img.min()) / (img.max() - img.min())
-    img=img*np.iinfo(np.uint8).max
+    #与normalize相反
+    img=(img+0.5)*np.iinfo(np.uint8).max
+    img=np.clip(img,0,255)
     return img
 
 def make_compared_im(pred, X_batch, target):
@@ -41,7 +34,8 @@ def make_compared_im(pred, X_batch, target):
     for i in range(im):
         image[:, :, (2 + i) * w + (2 + i) * 5:(3 + i) * w + (2 + i) * 5] = anti_normalize(X_batch[0, i, :, :, :].detach().cpu().numpy())
 
-    image=image.astype(np.uint8)
+    # image=image.astype(np.uint8)
+    image=np.uint8(image)
     image=np.transpose(image,(1,2,0))
     return image
 
