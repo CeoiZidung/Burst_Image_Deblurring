@@ -90,10 +90,11 @@ def validate_epoch(validation_generator,model,epoch,writer,device,criterion):
             val_loss += loss.detach().cpu().numpy()
 
             if v < 3:
-                im = make_compared_im(pred, X_batch, y_labels)
-                #epoch i sample j：第i个epoch中第j个sample
-                cv2.imwrite(PATH+'/output_compared_imgs/epoch{}_sample{}.png'.format(epoch,v),im)
-                # writer.add_image('image_' + str(v), im, n_iter)
+                batch_imgs = make_compared_im(pred, X_batch, y_labels)
+                for b,img in enumerate(batch_imgs):
+                    #epoch i sample j：第i个epoch中第j个sample
+                    cv2.imwrite(PATH+'/output_compared_imgs/epoch{}_sample{}.png'.format(epoch,v*args.bs+b),img)
+                    # writer.add_image('image_' + str(v), im, n_iter)
 
         writer.add_scalar('validation_loss', val_loss, n_iter)
 
@@ -120,7 +121,7 @@ def main():
     parser.add_argument('--lr', type=float, default=0.003)
     parser.add_argument('--lr_decay', type=float, default=0.99997)
     parser.add_argument('--resume', type=bool, default=False)
-    parser.add_argument('--tr', type=float, default=0.2)    #划分测试集占全部的比例
+    parser.add_argument('--tr', type=float, default=0.8)    #划分测试集占全部的比例
     global args #把参数变为全局
     args = parser.parse_args()
 

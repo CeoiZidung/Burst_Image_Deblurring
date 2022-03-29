@@ -24,20 +24,22 @@ def anti_normalize(img):
     return img
 
 def make_compared_im(pred, X_batch, target):
-    b, im, c, w, h = X_batch.size()
+    batch, im, c, w, h = X_batch.size()
+    batch_image=[]
+    for b in range(batch):
+        image = np.zeros((3, h, (w + 5) * (im + 2)))
+        image[:, :, :w] = anti_normalize(target[b, :, :, :].detach().cpu().numpy())
 
-    image = np.zeros((3, h, (w + 5) * (im + 2)))
-    image[:, :, :w] = anti_normalize(target[0, :, :, :].detach().cpu().numpy())
+        image[:, :, (w+5):(2*w + 5)] = anti_normalize(pred[b, :, :, :].detach().cpu().numpy())
 
-    image[:, :, (w+5):(2*w + 5)] = anti_normalize(pred[0, :, :, :].detach().cpu().numpy())
+        for i in range(im):
+            image[:, :, (2 + i) * w + (2 + i) * 5:(3 + i) * w + (2 + i) * 5] = anti_normalize(X_batch[b, i, :, :, :].detach().cpu().numpy())
 
-    for i in range(im):
-        image[:, :, (2 + i) * w + (2 + i) * 5:(3 + i) * w + (2 + i) * 5] = anti_normalize(X_batch[0, i, :, :, :].detach().cpu().numpy())
-
-    # image=image.astype(np.uint8)
-    image=np.uint8(image)
-    image=np.transpose(image,(1,2,0))
-    return image
+        # image=image.astype(np.uint8)
+        image=np.uint8(image)
+        image=np.transpose(image,(1,2,0))
+        batch_image.append(image)
+    return batch_image
 
 
 def load_namespace(file):
