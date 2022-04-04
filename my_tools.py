@@ -7,16 +7,15 @@ import cv2
 
 class Dataset(data.Dataset):
 
-    def __init__(self, path,folder_list, max_images = None):
+    def __init__(self, path,folder_list):
         self.path = path
         self.images_folder = folder_list   #图片文件夹，每个小文件夹是一个样本（包含五张）
-        if max_images != None:
-            self.images_folder = self.images_folder[:max_images]
-        self.size = 160
-        self.burst_length = 4
+        self.size = 320
 
     def __len__(self):
         return len(self.images_folder)
+
+
 
     def load_image(self,path):
         # image = cv2.cvtColor(cv2.imread(path))
@@ -54,16 +53,20 @@ class Dataset(data.Dataset):
         images=images_without_target
 
         #加载图片为numpy数组
-        target=self.load_image(os.path.join(images_path,target))
+        if target is not None:
+            target=self.load_image(os.path.join(images_path,target))
         tmp=[]
 
-        for i in range(self.burst_length):
+        for i in range(len(images)):
             burst_i=self.load_image(os.path.join(images_path,images[i]))
             tmp.append(burst_i)
 
         burst=np.array(tmp) #转换成numpy格式
 
-        #return两个，一个是x，另一个是label标签
-        return burst,target
+        if target is None:
+            return burst, self.images_folder[index]
+        else:
+            #return两个，一个是x，另一个是label标签
+            return burst, target, self.images_folder[index]
 
 

@@ -63,7 +63,7 @@ def homography_alignment(target, im, number_of_iterations = 10):
     # Define termination criteria
     criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, number_of_iterations, termination_eps)
 
-    # Run the ECC algorithm. The results are stored in warp_matrix.
+    # Run the ECC algorithm. The train_results are stored in warp_matrix.
     (cc, warp_matrix) = cv2.findTransformECC(im1_gray, im2_gray, warp_matrix, warp_mode, criteria, None, 1)
 
     # Use warpPerspective for Homography

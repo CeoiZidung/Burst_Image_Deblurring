@@ -15,28 +15,21 @@ import argparse
 def main():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--exp_path', type=list, default=['../../results/model'])
+    parser.add_argument('--exp_path', type=list, default=['./train_results/model'])
     parser.add_argument('--out_path', type=str, default='.')
     parser.add_argument('--NUMBER_OF_IMAGES', type=int, default=5000)
     parser.add_argument('--NUMBER_OF_PLOTS', type=int, default=5)
     parser.add_argument('--epochs', type=int, default=10)
-    parser.add_argument('--KERNEL_LVL', type=float, default=3)
-    parser.add_argument('--NOISE_LVL', type=float, default=1)
-    parser.add_argument('--MOTION_BLUR', type=bool, default=True)
-    parser.add_argument('--HOMO_ALIGN', type=bool, default=True)
     parser.add_argument('--model_iter', type=int, default=None)
     args = parser.parse_args()
 
-    print()
     print(args)
-    print()
 
     # Evaluation metric parameters
     SSIM_window_size = 3
 
     dict_ = {}
     for e, exp_path in enumerate(args.exp_paths):
-
         if args.model_iter == None:
             model_path = get_newest_model(exp_path)
         else:
@@ -68,8 +61,9 @@ def main():
         np.random.seed(42)
         torch.manual_seed(42)
 
-        # Generators
-        data_set = Dataset('../../data/test/', max_images=args.NUMBER_OF_IMAGES, kernel_lvl=args.KERNEL_LVL, noise_lvl=args.NOISE_LVL, motion_blur_boolean=args.MOTION_BLUR, homo_align=args.HOMO_ALIGN)
+        # training_set = Dataset(data_path,train_folder_list, args.max_images)
+        test_folder_list=os.listdir('./data/test/')
+        data_set = Dataset('./data/test/', test_folder_list ,max_images=args.NUMBER_OF_IMAGES)
         data_gen = data.DataLoader(data_set, **params)
 
         # evaluation

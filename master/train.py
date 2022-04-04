@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--bs', metavar='bs', type=int, default=1)
     parser.add_argument('--path', type=str, default='./data')
-    parser.add_argument('--results', type=str, default='./results/model')
+    parser.add_argument('--train_results', type=str, default='./train_results/model')
     parser.add_argument('--nw', type=int, default=0)
     parser.add_argument('--max_images', type=int, default=None)
     parser.add_argument('--val_size', type=int, default=None)

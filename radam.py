@@ -14,7 +14,7 @@ class RAdam(Optimizer):
 
     def step(self, closure=None):
 
-        loss = NONE
+        loss = None
         if closure is not None:
             loss = closure()
 
